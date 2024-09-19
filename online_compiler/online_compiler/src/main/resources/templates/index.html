@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-language Code Runner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #2c2c2c;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            background-color: #3c3c3c;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-container {
+            flex: 1;
+            margin-right: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #66b3ff;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            display: block;
+        }
+        select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #444;
+            color: #f0f0f0;
+        }
+        button {
+            background-color: #66b3ff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4d99e6;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .output-container {
+            flex: 1;
+            margin-left: 100px;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #f0f0f0;
+        }
+        pre {
+            background-color: #444;
+            border: 1px solid #666;
+            border-radius: 5px;
+            padding: 10px;
+            overflow: auto;
+            white-space: pre-wrap;
+            color: #f0f0f0;
+        }
+        .test {
+            display: flex;
+            flex-direction: row;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Multi-language Code Runner</h1>
+
+        <div class="test">
+            <div class="input-container">
+                <form action="#" th:action="@{/run}" method="post" th:object="${codeExecutionRequest}">
+                    <label for="language">Choose a language:</label>
+                    <select id="language" th:field="*{language}" onchange="setDefaultCode()">
+                        <option value="python" th:selected="${codeExecutionRequest.language == 'python'}">Python</option>
+                        <option value="java" th:selected="${codeExecutionRequest.language == 'java'}">Java</option>
+                        <option value="cpp" th:selected="${codeExecutionRequest.language == 'cpp'}">C++</option>
+                        <option value="ruby" th:selected="${codeExecutionRequest.language == 'ruby'}">Ruby</option>
+                    </select>
+
+                    <label for="code">Enter your code:</label>
+                    <textarea id="code" th:field="*{code}" rows="10" placeholder="Write your code here..."></textarea>
+
+                    <button type="submit">Run Code</button>
+                </form>
+            </div>
+
+            <div class="output-container">
+                <h2>Output:</h2>
+                <pre th:text="${output}"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDefaultCode() {
+            const language = document.getElementById("language").value;
+            let defaultCode = "";
+            switch (language) {
+                case "python":
+                    defaultCode = `print("Hello, World!")`;
+                    break;
+                case "java":
+                    defaultCode = `public class TempProgram {\n\n public static void main(String[] args) {\n System.out.println("Hello, World!");\n }\n\n }`;
+                    break;
+                case "cpp":
+                    defaultCode = `#include <iostream> using namespace std; int main() { cout << "Hello, World!" << endl; return 0; }`;
+                    break;
+                case "ruby":
+                    defaultCode = `puts "Hello, World!"`;
+                    break;
+            }
+            document.getElementById("code").value = defaultCode;
+        }
+        window.onload = setDefaultCode;
+    </script>
+</body>
+</html>
